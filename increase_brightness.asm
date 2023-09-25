@@ -56,10 +56,10 @@ main:
         jal storeToMeM
        
         #Write to files
-		li $v0, 15
+        li $v0, 15
 		move $a0, $s1
         la $a1, digits
-        li $a2, 3
+        li $a2, 4
 		syscall
 
         #rest
@@ -92,7 +92,18 @@ main:
         addi $t1, $t1, 48
         sb $t1, 0($t3)
 
-        #new Line
+        # #new Line
+        # li $v0, 15
+		# move $a0, $s1
+        # la $a1, digits
+        # li $a2, 3
+		# syscall
+
+        # li $v0, 15
+		# move $a0, $s1
+        # la $a1, line
+        # li $a2, 1
+		# syscall
        
     jr $ra
 
