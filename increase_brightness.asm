@@ -2,7 +2,7 @@
 	filePathIn:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\input.txt"
 	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\out.txt"
 	fileWords:	.space 1024
-    Int:        .word 0
+    digits:        .space 3
     line:   .asciiz "\n"
 .text
 .globl main
@@ -24,8 +24,6 @@ main:
     move $s1, $v0
 	li $t7, 48
     li $t5, 10      #The value to add so help create string int
-	li $t3, 0		#line counter
-
     move $t6, $zero 
 	readLoop:
 		li $v0, 14
@@ -42,49 +40,60 @@ main:
         beq $t1, 10, reset      #When we reach end of the line we set t6=0
 
         sub $t2, $t1, $t7      #Current Int Value
+
         mul $t6, $t6, $t5
+
         add $t6, $t6, $t2
  
         j   readLoop
 
-	# incre:
-	# 	sub $a0, $a0, $t7
-	# 	j readLoop
 
 
 	reset:  #Also increBy10
-        #Increment by 10
-		addi $t3, $t3,1
+       
         addi $t6, $t6, 10
-
-        #Write it to file
-        jal write
-
-        sb $t6, Int
-
+        la $t3, digits
+        jal storeToMeM
+       
         #Write to files
 		li $v0, 15
 		move $a0, $s1
-        la $a1, Int
-        li $a2, 1
+        la $a1, digits
+        li $a2, 3
 		syscall
 
         #rest
         li $t6, 0
+        #li $t3, 0
         
         j   readLoop
 	
 
-    write:
-        #print to screen for now
-        li $v0, 1
-        move $a0, $t6
-        syscall
+    storeToMeM:
+            # Extract the 1st digit (e.g., '1')
+            div $s3, $t6, 100  # Divide $t0 by 100 to get the hundreds digit
+            mflo $t1            # Q
+            addi $t1, $t1, 48
+        sb $t1, 0($t3)
+
+        #Extract 2nd degit
+        div $s5, $t6, 10  # 
+        mflo $t2            # Q( unit and tenth)
+        divu $t2, $t2, 10
+        mfhi $t1             #2nd degit
+        addi $t3, $t3, 1
+        addi $t1, $t1, 48
+        sb $t1, 0($t3)
+
+        #Extract the 3rd degit
+        div $s6, $t6, 10  # Divide $t0 by 100 to get the hundreds digit
+        mfhi $t1            # R
+        addi $t3, $t3, 1
+        addi $t1, $t1, 48
+        sb $t1, 0($t3)
 
         #new Line
-        li $v0, 4
-        la $a0, line
-        syscall
+       
     jr $ra
 
 	close_files:	#Close file
