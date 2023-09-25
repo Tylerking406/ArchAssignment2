@@ -58,8 +58,13 @@ main:
         j readLoop
 
     IntPart:
-        addi $t6, $t6, 10
-        la $t3, digits
+        bge $t6, 255, stayTheSame
+        blt $t6, 255, IncrePix
+    j readLoop
+
+    stayTheSame:
+        li $t6, 255
+          la $t3, digits
         jal storeToMeM
        
         #Write to files
@@ -71,7 +76,24 @@ main:
 
         #rest
         li $t6, 0
-    j readLoop
+    j   readLoop
+
+    IncrePix:
+         addi $t6, $t6, 10
+           la $t3, digits
+        jal storeToMeM
+       
+        #Write to files
+        li $v0, 15
+		move $a0, $s1
+        la $a1, digits
+        li $a2, 4
+		syscall
+
+        #rest
+        li $t6, 0
+    j   readLoop
+
 
 	reset:  #Also increBy10
         addi $t0, $t0, 1
