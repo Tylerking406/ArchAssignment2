@@ -25,6 +25,8 @@ main:
 	li $t7, 48
     li $t5, 10      #The value to add so help create string int
     move $t6, $zero 
+    li $t0, 1
+
 	readLoop:
 		li $v0, 14
 		move $a0, $s0
@@ -37,20 +39,25 @@ main:
 
 		la $t4, fileWords
         lb $t1, 0($t4)          #Value is ASCII
+
         beq $t1, 10, reset      #When we reach end of the line we set t6=0
-
+        blt $t0, 4, header
+        
         sub $t2, $t1, $t7      #Current Int Value
-
         mul $t6, $t6, $t5
-
         add $t6, $t6, $t2
  
-        j   readLoop
+    j   readLoop
 
+        header:
+            li $v0, 15
+            move $a0, $s1
+            la $a1, fileWords
+            li $a2, 1
+            syscall
+        j readLoop
 
-
-	reset:  #Also increBy10
-       
+    IntPart:
         addi $t6, $t6, 10
         la $t3, digits
         jal storeToMeM
@@ -64,6 +71,12 @@ main:
 
         #rest
         li $t6, 0
+    j readLoop
+
+	reset:  #Also increBy10
+        addi $t0, $t0, 1
+        ble $t0, 4,header       #ensure that newline is appeneded on new file
+        bge $t0, 4, IntPart
         #li $t3, 0
         
         j   readLoop
