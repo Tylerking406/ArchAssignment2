@@ -13,9 +13,9 @@ main:
 	#Open file for read
 	li $v0, 13
 	la $a0, filePathIn
-	li $a1,0           #0 is for read mode
+	li $a1,0                        # 0 is for read mode
 	syscall
-	move $s0, $v0	#File descriptor
+	move $s0, $v0	                # File descriptor
 
     #Open file for write
     li $v0, 13
@@ -25,11 +25,13 @@ main:
     syscall
     move $s1, $v0                   #File descriptor
 
-	li $t7, 48                      #$t7= 48 ( 0 is ASCII)
-    li $t5, 10
+	li $s2, 48                      #$s2= 48 ( 0 is ASCII)
+    li $s7, 10
     move $t6, $zero                 # will ontain 3 degits at end of line
     li $t0, 1                       #  line checker
-    li $t4, 0
+    li $t4, 0                       #sum for new image
+    li $t7, 0                       #sum for original image
+
 	readLoop:
         # Read a file
 		li $v0, 14
@@ -41,14 +43,14 @@ main:
 		beq $v0,$zero, close_files  #End of file
 
 		la $s3, fileWords
-        lb $t1, 0($s3)          #Value is ASCII
+        lb $t1, 0($s3)              #Value is ASCII
 
-        beq $t1, 10, reset      #go to reset when we reach EOL
-        blt $t0, 4, header      #go to header for first 3 lines
+        beq $t1, 10, reset          #go to reset when we reach EOL
+        blt $t0, 4, header          #go to header for first 3 lines
         
-        sub $s4, $t1, $t7      #Current pixel Value in decimal format
-        mul $t6, $t6, $t5
-        add $t6, $t6, $s4      #Store each pixel as a decimal
+        sub $s4, $t1, $s2           #Current pixel Value in decimal format
+        mul $t6, $t6, $s7
+        add $t6, $t6, $s4           #Store each pixel as a decimal
        
  
     j   readLoop
@@ -64,6 +66,7 @@ main:
 
     IntPart:
         # ensure pixel is less or equal 255
+        add $t7, $t7, $t6
         bge $t6, 255, stayTheSame
         blt $t6, 255, IncrePix
     j readLoop
@@ -91,7 +94,7 @@ main:
     j   readLoop
 
 
-	reset:  #Also increBy10
+	reset: 
         addi $t0, $t0, 1
         ble $t0, 4,header       #ensure that newline is appeneded on new file
         bge $t0, 4, IntPart
@@ -155,17 +158,42 @@ main:
         cvt.s.w $f2, $f2			# t2 is now float f2
         
         mtc1 $t4, $f4
-        cvt.s.w $f4, $f4		        # f4 is now float f4
+        cvt.s.w $f4, $f4		        # sum for new image(as float)
+
+        mtc1 $t7, $f8
+        cvt.s.w $f8, $f8                # sum for original image(as float)
         
         mtc1 $t1, $f1
         cvt.s.w $f1, $f1			# 255 is now float
         
-        div.s $f6, $f4, $f2   			# Avg pixels
-        div.s $f7, $f6, $f1  		       # to get a value between 0 and 1 
+        #Original image
+        div.s $f9, $f8, $f2             # Avg pixels
+        div.s $f10, $f9, $f1            # to get a value between 0 and 1 
+        #new image
+        div.s $f6, $f4, $f2   			 
+        div.s $f7, $f6, $f1  		       
+
+            #print output message 2
+        li $v0,4
+        la $a0, original
+        syscall
+
+            #print average of new image pixels
+        li $v0, 2
+        mov.s $f12, $f10
+        syscall
+
+        #newLine
+        li $v0, 4
+        la $a0, line
+        syscall
+
+            #print output message 2
         li $v0,4
         la $a0, new
         syscall
 
+            #print average of new image pixels
         li $v0, 2
         mov.s $f12, $f7
         syscall
