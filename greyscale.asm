@@ -1,6 +1,6 @@
 .data
-	filePathIn:	    .asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\input.txt"
-	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\out.txt"
+	filePathIn:	    .asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\input.ppm"
+	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\out.ppm"
 	fileWords:	    .space 1024
     digits:         .space 3
     line:           .asciiz "\n"
@@ -71,21 +71,22 @@ main:
     operation:
         div $t4, $t5,3
          la $t3, digits
-        #li $t1, 0               #checker
-        #reset
-        li $t6, 0
-            jal storeToMeM
-
+        jal storeToMeM
+        li $t8,0
         trippleDo:
-            beq $t6, 3, readLoop
+            beq $t8, 3, otherPix
             jal writeInt
-            addi $t6, $t6, 1
+            addi $t8, $t8, 1
          j trippleDo
         
-
-        
-        #li $t5, 1
     j readLoop
+
+    otherPix:
+        li $t6, 0
+        li $t7, 1
+        li $t5, 0
+        li $t8, 0
+    j   readLoop
 
 	reset: 
         addi $t0, $t0, 1
