@@ -71,12 +71,20 @@ main:
     operation:
         div $t4, $t5,3
          la $t3, digits
-        jal storeToMeM
-        jal writeInt
-
+        #li $t1, 0               #checker
         #reset
         li $t6, 0
-    li $t5, 1
+            jal storeToMeM
+
+        trippleDo:
+            beq $t6, 3, readLoop
+            jal writeInt
+            addi $t6, $t6, 1
+         j trippleDo
+        
+
+        
+        #li $t5, 1
     j readLoop
 
 	reset: 
