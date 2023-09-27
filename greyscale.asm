@@ -86,7 +86,7 @@ main:
         jal storeToMeM
         li $t8,0
         trippleDo:
-            beq $t8, 3, otherPix
+            beq $t8, 1, otherPix
             jal writeInt
             addi $t8, $t8, 1
          j trippleDo
