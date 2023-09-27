@@ -4,6 +4,7 @@
 	fileWords:	    .space 1024
     digits:         .space 3
     line:           .asciiz "\n"
+    file_Type:      .asciiz "P2"
 .text
 .globl main
 main:
@@ -41,7 +42,8 @@ main:
         lb $t1, 0($s3)              #Value is ASCII
 
         beq $t1, 10, reset          #go to reset when we reach EOL
-        ble $t0, 4, header          #go to header for first 3 lines
+        ble $t0, 5, header          #go to header for first 3 lines
+
         
         sub $s4, $t1, $s2           #Current pixel Value in decimal format
         mul $t6, $t6, $s7
@@ -51,6 +53,8 @@ main:
     j   readLoop
 
     header:
+             beq  $t0, 1, fileType
+             beq $t0, 2, readLoop
             #write to file
             li $v0, 15
             move $a0, $s1
@@ -59,6 +63,14 @@ main:
             syscall
         j readLoop
 
+    fileType:
+        li $v0, 15
+            move $a0, $s1
+            la $a1, file_Type
+            li $a2, 2
+            syscall
+        addi   $t0, $t0,1
+    j readLoop
     IntPart:
         # Do the operations
         add $t5, $t5, $t6
@@ -90,7 +102,7 @@ main:
 
 	reset: 
         addi $t0, $t0, 1
-        ble $t0, 5,header       #ensure that newline is appeneded on new file
+        ble $t0, 6,header       #ensure that newline is appeneded on new file
         bge $t0, 4, IntPart
      
         
