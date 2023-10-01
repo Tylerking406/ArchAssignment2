@@ -1,6 +1,6 @@
 .data
-	filePathIn:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q1\input.ppm"
-	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q1\out.ppm"
+	filePathIn:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\ArchAssignment2-main\jet_64_in_ascii_lf.ppm"
+	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\ArchAssignment2-main\jetIf.ppm"
     original:       .asciiz "Average pixel value of the original image:\n"
     new:               .asciiz "Average pixel value of new image:\n"
 	fileWords:	.space 1024

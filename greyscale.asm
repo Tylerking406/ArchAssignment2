@@ -1,6 +1,6 @@
 .data
-	filePathIn:	    .asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\input.ppm"
-	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\Ass2\q2\out.ppm"
+	filePathIn:	    .asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\ArchAssignment2-main\house_64_in_ascii_cr.ppm"
+	filePathOut:	.asciiz "C:\Users\NDXARI004\Documents\CSC2\MIPS\ArchAssignment2-main\houseCrOut.ppm"
 	fileWords:	    .space 1024
     digits:         .space 3
     line:           .asciiz "\n"
